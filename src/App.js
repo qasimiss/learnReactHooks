@@ -23,8 +23,12 @@ function App() {
     if (selectedSort) {
       return [...posts].sort((a,b) => a[selectedSort].localeCompare((b[selectedSort])))
     }
-    return posts;
+    return posts
   }, [selectedSort, posts])
+
+  const sortedAndSearchedPosts = useMemo( () => {
+    return sortedPosts.filter( post => post.title.includes(searchQuery))
+  }, [searchQuery, sortedPosts])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -60,9 +64,9 @@ function App() {
           ]}
           />
         </div>
-        {posts.length !== 0
+        {posts.length
           ? 
-            <PostList remove = {removePost} posts = {sortedPosts} title = "JavaScript Posts" />
+            <PostList remove = {removePost} posts = {sortedAndSearchedPosts} title = "JavaScript Posts" />
           : 
             <h1 style = {{textAlign: "center"}}> Posts are not exist</h1>
         }
