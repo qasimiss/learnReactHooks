@@ -2,6 +2,11 @@
 import PostItem from "./PostItem"
 
 const PostList = ({posts, title, remove}) => {
+    if (!posts.length) {
+        return (
+            <h1 style = {{textAlign: "center"}}> Posts are not exist</h1>
+        )
+    }
     return (
         <>
             <h1 style = {{textAlign: "center", marginTop: "20px"}}> {title}</h1>
