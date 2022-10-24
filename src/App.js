@@ -10,7 +10,8 @@ import { usePosts } from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/Loader/Loader";
 import { useFetching } from "./hooks/useFetching";
-import {getPageCount, getPagesArray} from "./utils/pages"
+import {getPageCount} from "./utils/pages"
+import Pagination from "./components/UI/paginatition/Pagination";
 
 function App() {
   
@@ -31,7 +32,7 @@ function App() {
     fetchPosts()
   // eslint-disable-next-line
   }, [page])
-  let pagesArray = getPagesArray(totalPages)
+ 
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -68,16 +69,11 @@ function App() {
         {isPostsLoading 
         ? <div style={{display: "flex", justifyContent: "center", marginTop: "25px"}}> <Loader/> </div> 
         : <PostList remove = {removePost} posts = {sortedAndSearchedPosts} title = "JavaScript Posts" />}
-        <div className="page__wrapper">
-          {pagesArray.map( p => 
-            <span 
-            key = {p} 
-            className={page === p ? "page page__current" : "page"}
-            onClick = { () => changePage(p)}>
-              {p}
-            </span>
-          )}
-        </div>
+        <Pagination 
+          page = {page} 
+          changePage = {changePage} 
+          totalPages = {totalPages} 
+        />
         
         
     </div>
