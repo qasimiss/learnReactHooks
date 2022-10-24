@@ -9,17 +9,23 @@ import MyModal from "./components/UI/MyModal/MyModal";
 import { usePosts } from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/Loader/Loader";
+import { useFetching } from "./hooks/useFetching";
 
 function App() {
   
   const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState({sort: "", query: ""})
   const [modal, setModal] = useState(false)
-  const [isPostsLoading, setIsPostsLoading] = useState(false)
+  
+  const [fetchPosts, isPostsLoading, postError] = useFetching( async () => {
+      const posts = await PostService.getAll()
+      setPosts(posts)
+  })
+
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
   useEffect( ()=> {
-    fetchPost()
+    fetchPosts()
   }, [])
 
   const createPost = (newPost) => {
@@ -27,14 +33,6 @@ function App() {
     setModal(false)
   }
   
-  async function fetchPost() {
-    setIsPostsLoading(true)
-    setTimeout( async () => {
-      const posts = await PostService.getAll()
-      setPosts(posts)
-      setIsPostsLoading(false)
-    }, 1000)
-  }
 
   const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id))
@@ -42,7 +40,7 @@ function App() {
   
   return (
     <div className="App">
-        <button style={{display: "block", margin: "50px auto 0"}} onClick={fetchPost}>REST API</button>
+        <button style={{display: "block", margin: "50px auto 0"}} onClick={fetchPosts}>REST API</button>
         <MyButton  style = {{marginTop: "25px"}} onClick = { () => setModal(true)}> 
           Write a Post
         </MyButton>
@@ -55,6 +53,9 @@ function App() {
           filter = {filter} 
           setFilter = {setFilter} 
         />
+        {postError && 
+          <h1>Error! {postError}</h1>
+        }
         {isPostsLoading 
         ? <div style={{display: "flex", justifyContent: "center", marginTop: "25px"}}> <Loader/> </div> 
         : <PostList remove = {removePost} posts = {sortedAndSearchedPosts} title = "JavaScript Posts" />
