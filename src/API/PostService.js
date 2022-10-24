@@ -9,12 +9,15 @@ export default class PostService {
             }
         })
         return responce
-        // try {
-            // const responce = await axios.get("https://jsonplaceholder.typicode.com/posts")
-            // return responce.data
-        // } catch(e) {
-        //     console.log(e)
-        // }
-        
+    }
+
+    static async getById(id) {
+        const responce = await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`)
+        return responce
+    }
+
+    static async getCommentsByPostId(id) {
+        const responce = await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}/comments`)
+        return responce
     }
 }
